@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Southside Oasis Wellness Spa — Book an appointment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --moss-900:#2c3823;
+    --moss-700:#3f5330;
+    --moss-600:#4a5d3a;
+    --sage-300:#a9b894;
+    --sage-100:#dbe2cc;
+    --sand-100:#f4f0e4;
+    --sand-50:#faf8f1;
+    --clay-500:#b9894c;
+    --clay-600:#9c7038;
+    --ink-800:#2a2a22;
+    --ink-500:#6b6a5c;
+    --line:#ddd6c2;
+    --white:#fffdf8;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--sand-100);
+    color:var(--ink-800);
+    font-family:'Jost', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .voice, h1, h2, h3, .brand-name{ font-family:'Fraunces', serif; }
+  .app{ max-width:760px; margin:0 auto; padding:0 0 4rem; }
+
+  /* ---------- Header ---------- */
+  .hero{
+    background:var(--moss-900);
+    color:var(--sand-50);
+    padding:2.6rem 1.75rem 2.2rem;
+    border-radius:0 0 28px 28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(120px 120px at 92% -10%, rgba(169,184,148,.35), transparent 70%),
+      radial-gradient(160px 160px at -10% 110%, rgba(185,137,76,.22), transparent 70%);
+    pointer-events:none;
+  }
+  .hero-top{ display:flex; align-items:center; gap:10px; position:relative; }
+  .mark{ width:30px; height:30px; flex:none; color:var(--sage-300); }
+  .eyebrow{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--sage-300); margin:0; }
+  h1.brand-name{ font-size:32px; font-weight:600; margin:.15rem 0 .3rem; line-height:1.05; position:relative;}
+  .hero p.tag{ margin:0; color:#d8ddc9; font-size:15px; max-width:34ch; position:relative; }
+  .hero-meta{
+    margin-top:1.4rem; display:flex; gap:1.4rem; flex-wrap:wrap;
+    font-size:13px; color:#c9d0b8; position:relative;
+  }
+  .hero-meta span{ display:flex; align-items:center; gap:6px; }
+
+  /* ---------- Stepper ---------- */
+  .stepper{
+    display:flex; justify-content:space-between;
+    margin:1.6rem 1.75rem 0; position:relative;
+  }
+  .stepper::before{
+    content:""; position:absolute; top:15px; left:24px; right:24px; height:2px;
+    background:var(--line); z-index:0;
+  }
+  .step{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; }
+  .step-leaf{
+    width:30px; height:30px; border-radius:50%; background:var(--white);
+    border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+    color:var(--ink-500); transition:all .25s ease;
+  }
+  .step.active .step-leaf{ border-color:var(--moss-600); color:var(--moss-600); background:var(--sage-100); }
+  .step.done .step-leaf{ border-color:var(--moss-600); background:var(--moss-600); color:var(--white); }
+  .step-label{ font-size:11px; color:var(--ink-500); text-align:center; max-width:70px; }
+  .step.active .step-label, .step.done .step-label{ color:var(--moss-700); font-weight:500; }
+
+  /* ---------- Panels ---------- */
+  .panel{ padding:1.9rem 1.75rem 0; animation:fadein .35s ease; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+  h2.panel-title{ font-size:22px; font-weight:500; margin:0 0 .2rem; color:var(--moss-900); }
+  .panel-sub{ margin:0 0 1.2rem; color:var(--ink-500); font-size:14px; }
+
+  .card-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:520px){ .card-grid{ grid-template-columns:1fr; } }
+
+  .select-card{
+    text-align:left; background:var(--white); border:1.5px solid var(--line);
+    border-radius:var(--radius); padding:14px 16px; cursor:pointer; font-family:inherit;
+    transition:border-color .15s ease, background .15s ease; display:flex; flex-direction:column; gap:4px;
+  }
+  .select-card:hover{ border-color:var(--sage-300); }
+  .select-card.selected{ border-color:var(--moss-600); background:var(--sage-100); }
+  .select-card .name{ font-weight:500; font-size:15px; color:var(--ink-800); }
+  .select-card .meta{ font-size:12.5px; color:var(--ink-500); }
+  .select-card .check{ align-self:flex-end; margin-top:-18px; color:var(--moss-600); opacity:0; }
+  .select-card.selected .check{ opacity:1; }
+
+  .therapist-card{ display:flex; gap:12px; align-items:flex-start; }
+  .avatar{
+    width:44px; height:44px; border-radius:50%; flex:none;
+    background:var(--sage-100); color:var(--moss-700); display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:15px;
+  }
+  .therapist-card .exp{
+    display:inline-block; margin-top:4px; font-size:11px; padding:2px 8px; border-radius:20px;
+    background:var(--sand-100); color:var(--moss-700); border:1px solid var(--line);
+  }
+
+  .field{ margin-bottom:1rem; }
+  .field label{ display:block; font-size:13px; color:var(--ink-500); margin-bottom:6px; }
+  .field input, .field textarea{
+    width:100%; padding:11px 13px; border-radius:10px; border:1.5px solid var(--line);
+    font-family:inherit; font-size:15px; background:var(--white); color:var(--ink-800);
+  }
+  .field input:focus, .field textarea:focus{ outline:none; border-color:var(--moss-600); }
+  .field textarea{ resize:vertical; min-height:70px; }
+
+  .slot-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:.4rem; }
+  @media (max-width:420px){ .slot-grid{ grid-template-columns:repeat(2,1fr); } }
+  .slot{
+    padding:9px 6px; text-align:center; border-radius:9px; border:1.5px solid var(--line);
+    background:var(--white); cursor:pointer; font-size:14px; font-family:inherit;
+  }
+  .slot:hover{ border-color:var(--sage-300); }
+  .slot.selected{ border-color:var(--moss-600); background:var(--moss-600); color:var(--white); }
+  .closed-note{
+    margin-top:.7rem; font-size:13px; color:var(--clay-600); background:#f7ecdb;
+    border:1px solid #ecd9b3; border-radius:10px; padding:8px 12px;
+  }
+
+  .summary{
+    background:var(--white); border:1.5px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px; margin-top:.3rem;
+  }
+  .summary-row{ display:flex; justify-content:space-between; font-size:14px; padding:6px 0; border-bottom:1px dashed var(--line); }
+  .summary-row:last-child{ border-bottom:none; }
+  .summary-row .k{ color:var(--ink-500); }
+  .summary-row .v{ font-weight:500; text-align:right; }
+
+  .nav-row{ display:flex; gap:10px; margin:1.6rem 0 0; }
+  .btn{
+    font-family:inherit; font-size:15px; font-weight:500; border-radius:11px; padding:12px 20px;
+    border:1.5px solid var(--line); background:var(--white); color:var(--ink-800); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .btn-primary{ background:var(--moss-600); border-color:var(--moss-600); color:var(--white); flex:1; }
+  .btn-primary:hover:not(:disabled){ background:var(--moss-700); }
+  .btn-ghost:hover{ border-color:var(--sage-300); }
+  .btn-whatsapp{ background:#3f5330; border-color:#3f5330; color:var(--white); }
+
+  /* ---------- Confirmation ---------- */
+  .confirm-mark{
+    width:56px; height:56px; border-radius:50%; background:var(--sage-100); color:var(--moss-700);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;
+  }
+  .confirm-wrap{ text-align:center; }
+
+  /* ---------- Appointments list & footer ---------- */
+  .section-block{ padding:1.9rem 1.75rem 0; }
+  .appt-item{
+    background:var(--white); border:1.5px solid var(--line); border-radius:var(--radius);
+    padding:12px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;
+  }
+  .appt-item .info .svc{ font-weight:500; font-size:14.5px; }
+  .appt-item .info .when{ font-size:12.5px; color:var(--ink-500); }
+  .cancel-btn{ background:none; border:none; color:var(--ink-500); cursor:pointer; font-size:12.5px; text-decoration:underline; padding:4px; }
+  .empty-note{ color:var(--ink-500); font-size:14px; }
+
+  .footer{
+    margin-top:2.2rem; padding:1.4rem 1.75rem; border-top:1px solid var(--line);
+    font-size:13px; color:var(--ink-500); display:flex; flex-direction:column; gap:6px;
+  }
+  .footer a{ color:var(--moss-700); }
+  .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <h2 class="sr-only">Southside Oasis Wellness Spa appointment booking tool: pick a service, therapist, date and time, then send your request by WhatsApp.</h2>
+
+  <div class="hero">
+    <div class="hero-top">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21c-4-2.6-6-6-6-9.5S8 5 12 3c4 2 6 5 6 8.5S16 18.4 12 21z"/><path d="M12 21V9"/></svg>
+      <p class="eyebrow">Sanctuary of wellness</p>
+    </div>
+    <h1 class="brand-name">Southside Oasis</h1>
+    <p class="tag">Book a treatment at our Keetmanshoop wellness spa — relax, renew, redefine.</p>
+    <div class="hero-meta">
+      <span>Tue&ndash;Sun, 10:00&ndash;19:00</span>
+      <span>Erf 49, Noordhoek, Keetmanshoop</span>
+    </div>
+  </div>
+
+  <div class="stepper" id="stepper"></div>
+  <div id="panelHost"></div>
+
+  <div class="section-block" id="apptSection">
+    <h2 class="panel-title" style="font-size:18px;">Your requests</h2>
+    <p class="panel-sub">Saved on this device only.</p>
+    <div id="apptList"></div>
+  </div>
+
+  <div class="footer">
+    <div><strong style="color:var(--moss-700)">Call or WhatsApp</strong> &middot; 081 422 4450 / 081 335 8307</div>
+    <div>Erf 49, Noordhoek, Keetmanshoop &middot; <a href="https://goo.gl/maps/WJLdg6B2G5A13QTi7?g_st=aw" target="_blank" rel="noopener">Get directions</a></div>
+    <div>Open Tuesday to Sunday, 10:00&ndash;19:00 &middot; closed Mondays</div>
+  </div>
+</div>
+
+<script>
+const SERVICES = [
+  { id:'swedish', name:'Swedish massage', meta:'Full-body, relaxation-focused' },
+  { id:'deep', name:'Deep tissue massage', meta:'Firmer pressure, targets tension' },
+  { id:'indianhead', name:'Indian head massage', meta:'Scalp, neck and shoulders' },
+  { id:'facial', name:'Facial treatment', meta:'Cleanse, refresh, glow' },
+  { id:'waxing', name:'Waxing treatment', meta:'Smooth, precise' },
+  { id:'pedicure', name:'Pedicure', meta:'Foot care and polish' },
+  { id:'manicure', name:'Manicure', meta:'Hand care and polish' },
+  { id:'consult', name:'Client consultation', meta:'Talk through the right treatment for you' },
+];
+
+const THERAPISTS = [
+  { id:'malaika', name:'Malaika Stein', role:'Spa therapist consultant', years:'6 years experience', initials:'MS' },
+  { id:'rashieda', name:'Rashieda Makgone', role:'Spa therapist', years:'18 years experience', initials:'RM' },
+];
+
+const SLOTS = ['10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+const STEPS = ['Service','Therapist','Date & time','Your details','Confirm'];
+
+let state = {
+  step: 0,
+  service: null,
+  therapist: null,
+  date: '',
+  time: '',
+  name: '',
+  phone: '',
+  notes: ''
+};
+
+function leafIcon(kind){
+  if(kind==='done') return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>';
+  return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c-4-2.6-6-6-6-9.5S8 5 12 3c4 2 6 5 6 8.5S16 18.4 12 21z"/></svg>';
+}
+
+function renderStepper(){
+  const el = document.getElementById('stepper');
+  el.innerHTML = STEPS.map((label,i)=>{
+    const cls = i < state.step ? 'done' : (i === state.step ? 'active' : '');
+    return `<div class="step ${cls}">
+      <div class="step-leaf">${leafIcon(i<state.step?'done':'leaf')}</div>
+      <div class="step-label">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+function isMonday(dateStr){
+  if(!dateStr) return false;
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.getDay() === 1;
+}
+
+function todayISO(){
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+
+function renderPanel(){
+  const host = document.getElementById('panelHost');
+  let html = '';
+
+  if(state.step === 0){
+    html = `
+      <div class="panel">
+        <h2 class="panel-title">Choose a treatment</h2>
+        <p class="panel-sub">Select the service you'd like to book.</p>
+        <div class="card-grid">
+          ${SERVICES.map(s=>`
+            <button class="select-card ${state.service===s.id?'selected':''}" onclick="selectService('${s.id}')">
+              <span class="name">${s.name}</span>
+              <span class="meta">${s.meta}</span>
+              <span class="check">${leafIcon('done')}</span>
+            </button>`).join('')}
+        </div>
+        <div class="nav-row">
+          <button class="btn btn-primary" ${state.service?'':'disabled'} onclick="goNext()">Continue</button>
+        </div>
+      </div>`;
+  }
+
+  if(state.step === 1){
+    html = `
+      <div class="panel">
+        <h2 class="panel-title">Choose your therapist</h2>
+        <p class="panel-sub">Both therapists offer the full treatment menu.</p>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${THERAPISTS.map(t=>`
+            <button class="select-card therapist-card ${state.therapist===t.id?'selected':''}" onclick="selectTherapist('${t.id}')">
+              <div class="avatar">${t.initials}</div>
+              <div style="flex:1;">
+                <div class="name">${t.name}</div>
+                <div class="meta">${t.role}</div>
+                <span class="exp">${t.years}</span>
+              </div>
+              <span class="check" style="margin-top:0;">${leafIcon('done')}</span>
+            </button>`).join('')}
+        </div>
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goBack()">Back</button>
+          <button class="btn btn-primary" ${state.therapist?'':'disabled'} onclick="goNext()">Continue</button>
+        </div>
+      </div>`;
+  }
+
+  if(state.step === 2){
+    const monday = isMonday(state.date);
+    html = `
+      <div class="panel">
+        <h2 class="panel-title">Pick a date and time</h2>
+        <p class="panel-sub">We're open Tuesday to Sunday, 10:00&ndash;19:00.</p>
+        <div class="field">
+          <label for="dateInput">Date</label>
+          <input type="date" id="dateInput" min="${todayISO()}" value="${state.date}" onchange="selectDate(this.value)">
+        </div>
+        ${monday ? `<div class="closed-note">We're closed on Mondays &mdash; please choose another date.</div>` : ''}
+        ${state.date && !monday ? `
+          <div class="field" style="margin-top:1rem;">
+            <label>Available times</label>
+            <div class="slot-grid">
+              ${SLOTS.map(t=>`<button class="slot ${state.time===t?'selected':''}" onclick="selectTime('${t}')">${t}</button>`).join('')}
+            </div>
+          </div>` : ''}
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goBack()">Back</button>
+          <button class="btn btn-primary" ${(state.date && state.time && !monday)?'':'disabled'} onclick="goNext()">Continue</button>
+        </div>
+      </div>`;
+  }
+
+  if(state.step === 3){
+    html = `
+      <div class="panel">
+        <h2 class="panel-title">Your details</h2>
+        <p class="panel-sub">So we know who to expect and how to reach you.</p>
+        <div class="field">
+          <label for="nameInput">Full name</label>
+          <input id="nameInput" type="text" placeholder="Your name" value="${state.name}" oninput="state.name=this.value; renderPanel();">
+        </div>
+        <div class="field">
+          <label for="phoneInput">Phone or WhatsApp number</label>
+          <input id="phoneInput" type="tel" placeholder="081 000 0000" value="${state.phone}" oninput="state.phone=this.value; renderPanel();">
+        </div>
+        <div class="field">
+          <label for="notesInput">Notes (optional)</label>
+          <textarea id="notesInput" placeholder="Anything we should know before your visit" oninput="state.notes=this.value">${state.notes}</textarea>
+        </div>
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goBack()">Back</button>
+          <button class="btn btn-primary" ${(state.name.trim() && state.phone.trim())?'':'disabled'} onclick="goNext()">Review request</button>
+        </div>
+      </div>`;
+  }
+
+  if(state.step === 4){
+    const service = SERVICES.find(s=>s.id===state.service);
+    const therapist = THERAPISTS.find(t=>t.id===state.therapist);
+    html = `
+      <div class="panel">
+        <h2 class="panel-title">Confirm your request</h2>
+        <p class="panel-sub">We'll send this to the spa on WhatsApp to confirm availability.</p>
+        <div class="summary">
+          <div class="summary-row"><span class="k">Treatment</span><span class="v">${service.name}</span></div>
+          <div class="summary-row"><span class="k">Therapist</span><span class="v">${therapist.name}</span></div>
+          <div class="summary-row"><span class="k">Date</span><span class="v">${formatDate(state.date)}</span></div>
+          <div class="summary-row"><span class="k">Time</span><span class="v">${state.time}</span></div>
+          <div class="summary-row"><span class="k">Name</span><span class="v">${state.name}</span></div>
+          <div class="summary-row"><span class="k">Contact</span><span class="v">${state.phone}</span></div>
+          ${state.notes ? `<div class="summary-row"><span class="k">Notes</span><span class="v">${state.notes}</span></div>` : ''}
+        </div>
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goBack()">Back</button>
+          <button class="btn btn-whatsapp" style="flex:1;" onclick="sendRequest()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.45 1.32 4.95L2 22l5.24-1.37a9.9 9.9 0 004.8 1.22h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2zm5.8 14.24c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.12.11-1.8-.11-.42-.14-.95-.31-1.64-.6-2.88-1.24-4.76-4.14-4.9-4.33-.14-.19-1.17-1.55-1.17-2.96 0-1.4.74-2.09 1-2.38.26-.28.57-.35.76-.35h.55c.18 0 .41-.07.64.49.24.58.8 2 .87 2.14.07.14.12.3.02.49-.1.19-.15.31-.3.48-.14.17-.3.37-.43.5-.14.14-.29.29-.12.57.16.28.72 1.19 1.55 1.93 1.07.95 1.97 1.24 2.25 1.38.28.14.44.12.6-.07.16-.19.68-.79.87-1.06.19-.28.37-.23.63-.14.26.09 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.36z"/></svg>
+            Send via WhatsApp
+          </button>
+        </div>
+      </div>`;
+  }
+
+  if(state.step === 5){
+    html = `
+      <div class="panel confirm-wrap">
+        <div class="confirm-mark">${leafIcon('done')}</div>
+        <h2 class="panel-title">Request sent</h2>
+        <p class="panel-sub">Your booking request has been saved. Confirm the appointment with the spa on WhatsApp, and keep an eye on your phone for their reply.</p>
+        <div class="nav-row">
+          <button class="btn btn-primary" onclick="resetFlow()">Book another appointment</button>
+        </div>
+      </div>`;
+  }
+
+  host.innerHTML = html;
+  renderStepper();
+}
+
+function formatDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+}
+
+function selectService(id){ state.service = id; renderPanel(); }
+function selectTherapist(id){ state.therapist = id; renderPanel(); }
+function selectDate(val){ state.date = val; state.time=''; renderPanel(); }
+function selectTime(val){ state.time = val; renderPanel(); }
+
+function goNext(){ state.step++; renderPanel(); window.scrollTo({top:0, behavior:'smooth'}); }
+function goBack(){ state.step--; renderPanel(); }
+
+function resetFlow(){
+  state = { step:0, service:null, therapist:null, date:'', time:'', name:'', phone:'', notes:'' };
+  renderPanel();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+async function saveBooking(booking){
+  try{
+    const listRes = await window.storage.get('bookings-list').catch(()=>null);
+    const list = listRes ? JSON.parse(listRes.value) : [];
+    list.push(booking);
+    await window.storage.set('bookings-list', JSON.stringify(list));
+  }catch(e){ console.error('Could not save booking', e); }
+}
+
+async function loadBookings(){
+  try{
+    const res = await window.storage.get('bookings-list');
+    return res ? JSON.parse(res.value) : [];
+  }catch(e){ return []; }
+}
+
+async function removeBooking(id){
+  try{
+    const res = await window.storage.get('bookings-list');
+    const list = res ? JSON.parse(res.value) : [];
+    const updated = list.filter(b=>b.id!==id);
+    await window.storage.set('bookings-list', JSON.stringify(updated));
+  }catch(e){ console.error(e); }
+  renderAppointments();
+}
+
+async function renderAppointments(){
+  const list = await loadBookings();
+  const el = document.getElementById('apptList');
+  if(!list.length){
+    el.innerHTML = `<p class="empty-note">No appointment requests yet.</p>`;
+    return;
+  }
+  el.innerHTML = list.slice().reverse().map(b=>`
+    <div class="appt-item">
+      <div class="info">
+        <div class="svc">${b.serviceName} with ${b.therapistName}</div>
+        <div class="when">${formatDate(b.date)} at ${b.time}</div>
+      </div>
+      <button class="cancel-btn" onclick="removeBooking('${b.id}')">Remove</button>
+    </div>
+  `).join('');
+}
+
+function sendRequest(){
+  const service = SERVICES.find(s=>s.id===state.service);
+  const therapist = THERAPISTS.find(t=>t.id===state.therapist);
+  const booking = {
+    id: 'b_' + Date.now(),
+    serviceName: service.name,
+    therapistName: therapist.name,
+    date: state.date,
+    time: state.time,
+    name: state.name,
+    phone: state.phone,
+    notes: state.notes
+  };
+  saveBooking(booking).then(renderAppointments);
+
+  const message =
+`Hi Southside Oasis, I'd like to book:
+Treatment: ${service.name}
+Therapist: ${therapist.name}
+Date: ${formatDate(state.date)}
+Time: ${state.time}
+Name: ${state.name}
+Contact: ${state.phone}${state.notes ? '\nNotes: ' + state.notes : ''}`;
+
+  const url = 'https://wa.me/264814224450?text=' + encodeURIComponent(message);
+  window.open(url, '_blank');
+  state.step = 5;
+  renderPanel();
+}
+
+renderPanel();
+renderAppointments();
+</script>
+</body>
+</html>
